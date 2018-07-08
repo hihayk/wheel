@@ -7,6 +7,12 @@ import SliderBox from './components/slider-box'
 
 const wheelRadius = 320
 
+const Logo = styled.div`
+  position: absolute;
+  top: 72px;
+  left: 88px;
+`
+
 const WheelHelper = styled.div`
   width: ${wheelRadius}px;
   position: relative;
@@ -123,6 +129,9 @@ class App extends Component {
 
     return (
       <MainContainer>
+        <Logo>
+          Wheel
+        </Logo>
         <LeftSection>
           <div>
             <SliderBox

@@ -82,6 +82,7 @@ const ColorCodesSection = styled.div`
   padding-left: 48px;
   font-size: 16px;
   line-height: 24px;
+  position: relative;
 `
 
 class WheelItem extends Component {
@@ -211,7 +212,7 @@ class WheelItem extends Component {
           </SlidersContainer>
         )}
 
-        <ColorCodesSection style={{ transform: `translateY(calc((33vh - ${this.props.colorsAmount * 24}px) / 2))` }}>
+        <ColorCodesSection style={{ top: `-100px` }}>
           {colorString.to.hex(Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue).rgb().round().array())}
         </ColorCodesSection>
       </WheelItemWrapper>
