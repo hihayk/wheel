@@ -9,18 +9,16 @@ import SliderBox from './components/slider-box'
 const wheelRadius = 320
 const colorCircleSize = 32
 
-const ColorBlocks = styled.div`
-  position: relative;
-  height: ${wheelRadius}px;
+const WheelHelper = styled.div`
   width: ${wheelRadius}px;
-  padding-left: ${wheelRadius / 2 - colorCircleSize / 2}px;
-  z-index: 110;
+  position: relative;
 `
 
 const MainContainer = styled.div`
   display: flex;
   min-height: 100vh;
   align-items: center;
+  min-width: 1240px;
 `
 
 const LeftSection = styled.div`
@@ -41,6 +39,7 @@ const RightSection = styled.div`
   align-self: stretch;
   display: flex;
   align-items: center;
+  min-width: 224px;
 `
 
 const ColorsAmountInput = styled.input`
@@ -60,6 +59,7 @@ const ColorsAmountInput = styled.input`
   padding: 4px;
   color: inherit;
   appearance: none;
+  z-index: 120;
 
   &::-webkit-inner-spin-button {
     appearance: none;
@@ -172,10 +172,10 @@ class App extends Component {
         </LeftSection>
 
         <CenterSection>
-          <ColorBlocks>
+          <WheelHelper>
             <ColorsAmountInput min={1} max={28} type='number' value={this.state.colorsAmount} onChange={this.handleColorsAmountChange} />
             <Wheel colorsList={colorsList} colorsAmount={this.state.colorsAmount} />
-          </ColorBlocks>
+          </WheelHelper>
         </CenterSection>
 
         <RightSection>
