@@ -2,12 +2,10 @@ import React, { Component } from 'react'
 import './App.css'
 import Color from 'color'
 import styled from 'styled-components'
-import colorString from 'color-string'
 import Wheel from './components/wheel'
 import SliderBox from './components/slider-box'
 
 const wheelRadius = 320
-const colorCircleSize = 32
 
 const WheelHelper = styled.div`
   width: ${wheelRadius}px;
@@ -28,18 +26,6 @@ const LeftSection = styled.div`
 
 const CenterSection = styled.div`
   flex: 2;
-`
-
-const RightSection = styled.div`
-  padding-right: 88px;
-  padding-left: 48px;
-  text-align: right;
-  border-left: 1px solid rgba(0,0,0,.1);
-  max-height: 100vh;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  min-width: 224px;
 `
 
 const ColorsAmountInput = styled.input`
@@ -64,14 +50,6 @@ const ColorsAmountInput = styled.input`
   &::-webkit-inner-spin-button {
     appearance: none;
   }
-`
-
-const ColorCodes = styled.div`
-  max-height: 100vh;
-  padding: 32px 0;
-  overflow: auto;
-  font-size: 16px;
-  line-height: 24px;
 `
 
 class App extends Component {
@@ -153,6 +131,7 @@ class App extends Component {
               sliderOnChange={this.handleInitialColorHue}
               min={0}
               max={359}
+              step={0.1}
             />
             <SliderBox
               label='Saturation'
@@ -160,6 +139,7 @@ class App extends Component {
               sliderOnChange={this.handleInitialColorSaturation}
               min={0}
               max={100}
+              step={0.1}
             />
             <SliderBox
               label='Lightness'
@@ -167,6 +147,7 @@ class App extends Component {
               sliderOnChange={this.handleInitialColorLightness}
               min={0}
               max={100}
+              step={0.1}
             />
           </div>
         </LeftSection>
@@ -177,16 +158,6 @@ class App extends Component {
             <Wheel colorsList={colorsList} colorsAmount={this.state.colorsAmount} />
           </WheelHelper>
         </CenterSection>
-
-        <RightSection>
-          <ColorCodes>
-            {colorsList.map((colorItem, index) => (
-              <div>
-                {colorString.to.hex(Color(colorItem).rgb().round().array())}
-              </div>
-            ))}
-          </ColorCodes>
-        </RightSection>
 
       </MainContainer>
     )
