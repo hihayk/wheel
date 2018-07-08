@@ -174,10 +174,7 @@ class App extends Component {
         <CenterSection>
           <ColorBlocks>
             <ColorsAmountInput min={1} max={28} type='number' value={this.state.colorsAmount} onChange={this.handleColorsAmountChange} />
-
-            {colorsList.map((colorItem, index) => (
-              <Wheel color={colorItem} rotateAngle={index * 360 / this.state.colorsAmount} />
-            ))}
+            <Wheel colorsList={colorsList} colorsAmount={this.state.colorsAmount} />
           </ColorBlocks>
         </CenterSection>
 
