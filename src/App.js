@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './App.css'
 import Color from 'color'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import colorString from 'color-string'
 
 const wheelRadius = 320
@@ -86,10 +86,15 @@ const ColorsAmountInput = styled.input`
   z-index: 2;
   font: inherit;
   border: 0;
-  text-align: right;
+  text-align: center;
   font-size: 24px;
   padding: 4px;
   color: inherit;
+  appearance: none;
+
+  &::-webkit-inner-spin-button {
+    appearance: none;
+  }
 `
 
 const ColorInput = styled.input`
@@ -98,7 +103,7 @@ const ColorInput = styled.input`
   width: ${colorCircleSize}px;
   height: ${colorCircleSize}px;
   border-radius: 50%;
-  apparience: none;
+  appearance: none;
 
   position: absolute;
   top: 0;
@@ -116,8 +121,68 @@ const ColorInput = styled.input`
   }
 `
 
+const sliderThumbStyles = css`
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #404040;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+`
+
+const sliderTrackStyles = css`
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #D8D8D8;
+  border-radius: 2px;
+`
+
 const SliderInput = styled.input`
   width: 256px;
+  height: 12px;
+  -webkit-appearance: none;
+
+  &:focus {
+    outline: none;
+  }
+  &::-webkit-slider-runnable-track {
+    ${sliderTrackStyles}
+  }
+  &::-webkit-slider-thumb {
+    ${sliderThumbStyles}
+  }
+  &:focus::-webkit-slider-runnable-track {
+    background: #aaa;
+  }
+  &::-moz-range-track {
+    ${sliderTrackStyles}
+  }
+  &::-moz-range-thumb {
+    ${sliderThumbStyles}
+  }
+  &::-ms-track {
+    ${sliderTrackStyles}
+  }
+  &::-ms-fill-lower {
+    background: #D8D8D8;
+    border-radius: 2px;
+  }
+  &::-ms-fill-upper {
+    background: #D8D8D8;
+    border-radius: 2px;
+  }
+  &::-ms-thumb {
+    ${sliderThumbStyles}
+  }
+  &:focus::-ms-fill-lower {
+    background: #D8D8D8;
+  }
+  &:focus::-ms-fill-upper {
+    background: #D8D8D8;
+  }
 `
 
 const SliderTitle = styled.div`
@@ -130,6 +195,12 @@ const SliderTitle = styled.div`
 
 const SliderRow = styled.div`
   margin-bottom: 16px;
+`
+
+const ColorCodes = styled.div`
+  max-height: 100vh;
+  padding: 32px 0;
+  overflow: auto;
 `
 
 class ColorBlock extends Component {
@@ -180,9 +251,15 @@ class ColorBlock extends Component {
   }
 
   handleColorClick (e) {
-    this.setState({
-      colorSettinsOpen: true
-    })
+    if (!this.state.colorSettinsOpen) {
+      this.setState({
+        colorSettinsOpen: true
+      })
+    } else {
+      this.setState({
+        colorSettinsOpen: false
+      })
+    }
   }
 
   handleSettingsCloseClick (e) {
@@ -193,6 +270,7 @@ class ColorBlock extends Component {
 
   render () {
     const settingsHasChanged = this.state.saturationValue > 0 || this.state.desaturationValue > 0 || this.state.lightenValue > 0 || this.state.darkenValue > 0
+
     return (
       <div>
         <ColorBoxWrapper
@@ -260,7 +338,7 @@ class App extends Component {
     super(props)
     this.state = {
       saturationValue: 0,
-      initialColor: '#2EA194',
+      initialColor: '#69B794',
       colorsAmount: 12,
       colorSettinsOpen: false
     }
@@ -313,11 +391,13 @@ class App extends Component {
         </CenterSection>
 
         <RightSection>
-          {colorsList.map((colorItem, index) => (
-            <div>
-              {colorString.to.hex(Color(colorItem).rgb().round().array())}
-            </div>
-          ))}
+          <ColorCodes>
+            {colorsList.map((colorItem, index) => (
+              <div>
+                {colorString.to.hex(Color(colorItem).rgb().round().array())}
+              </div>
+            ))}
+          </ColorCodes>
         </RightSection>
 
       </MainContainer>
