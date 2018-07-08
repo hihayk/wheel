@@ -42,15 +42,32 @@ const ColorBlocks = styled.div`
   height: ${wheelRadius}px;
   width: ${wheelRadius}px;
   padding-left: ${wheelRadius / 2 - colorCircleSize / 2}px;
+  z-index: 110;
+`
+
+const SlidersBackdrop = styled.div`
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-color: rgba(255,255,255,0);
+  left: 0;
+  top: 0;
+  z-index: 80;
+`
+
+const SlidersContainer = styled.div`
+
 `
 
 const SlidersWrapper = styled.div`
   position: absolute;
-  margin-left: 64px;
+  margin-left: 48px;
   height: 100%;
   left: 100%;
   display: flex;
   align-items: center;
+  z-index: 100;
+  background-color: white;
 `
 
 const MainContainer = styled.div`
@@ -60,18 +77,23 @@ const MainContainer = styled.div`
 `
 
 const LeftSection = styled.div`
-  flex: 1;
+  padding-right: 48px;
   padding-left: 88px;
 `
 
 const CenterSection = styled.div`
-
+  flex: 2;
 `
 
 const RightSection = styled.div`
-  flex: 1;
   padding-right: 88px;
+  padding-left: 48px;
   text-align: right;
+  border-left: 1px solid rgba(0,0,0,.1);
+  max-height: 100vh;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
 `
 
 const ColorsAmountInput = styled.input`
@@ -97,30 +119,6 @@ const ColorsAmountInput = styled.input`
   }
 `
 
-const ColorInput = styled.input`
-  border: none;
-  padding: 0;
-  width: ${colorCircleSize}px;
-  height: ${colorCircleSize}px;
-  border-radius: 50%;
-  appearance: none;
-
-  position: absolute;
-  top: 0;
-  left: ${wheelRadius / 2 - colorCircleSize / 2}px;
-  z-index: 1;
-
-  &::-webkit-color-swatch {
-    border-radius: 50%;
-    border: none;
-  }
-
-  &::-webkit-color-swatch-wrapper {
-    padding: 0;
-    border-radius: 50%;
-  }
-`
-
 const sliderThumbStyles = css`
   height: 12px;
   width: 12px;
@@ -141,7 +139,7 @@ const sliderTrackStyles = css`
 `
 
 const SliderInput = styled.input`
-  width: 256px;
+  width: 224px;
   height: 12px;
   -webkit-appearance: none;
 
@@ -201,6 +199,8 @@ const ColorCodes = styled.div`
   max-height: 100vh;
   padding: 32px 0;
   overflow: auto;
+  font-size: 16px;
+  line-height: 24px;
 `
 
 class ColorBlock extends Component {
@@ -290,43 +290,45 @@ class ColorBlock extends Component {
         </ColorBoxWrapper>
 
         {this.state.colorSettinsOpen &&
-          <SlidersWrapper>
-            <div>
+          <SlidersContainer>
+            <SlidersWrapper>
               <div>
-                <SliderRow>
-                  <SliderTitle>
-                    Saturate
-                  </SliderTitle>
-                  <SliderInput type='range' min={0} max={1} step='any' value={this.state.saturationValue} onChange={this.handleSaturationChange} />
-                </SliderRow>
+                <div>
+                  <SliderRow>
+                    <SliderTitle>
+                      Saturate
+                    </SliderTitle>
+                    <SliderInput type='range' min={0} max={1} step='any' value={this.state.saturationValue} onChange={this.handleSaturationChange} />
+                  </SliderRow>
 
-                <SliderRow>
-                  <SliderTitle>
-                    Desaturate
-                  </SliderTitle>
-                  <SliderInput type='range' min={0} max={1} step='any' value={this.state.desaturationValue} onChange={this.handleDesaturationChange} />
-                </SliderRow>
+                  <SliderRow>
+                    <SliderTitle>
+                      Desaturate
+                    </SliderTitle>
+                    <SliderInput type='range' min={0} max={1} step='any' value={this.state.desaturationValue} onChange={this.handleDesaturationChange} />
+                  </SliderRow>
 
-                <SliderRow>
-                  <SliderTitle>
-                    Lighten
-                  </SliderTitle>
-                  <SliderInput type='range' min={0} max={1} step='any' value={this.state.lightenValue} onChange={this.handleLightenChange} />
-                </SliderRow>
+                  <SliderRow>
+                    <SliderTitle>
+                      Lighten
+                    </SliderTitle>
+                    <SliderInput type='range' min={0} max={1} step='any' value={this.state.lightenValue} onChange={this.handleLightenChange} />
+                  </SliderRow>
 
-                <SliderRow>
-                  <SliderTitle>
-                    Darken
-                  </SliderTitle>
-                  <SliderInput type='range' min={0} max={1} step='any' value={this.state.darkenValue} onChange={this.handleDarkenChange} />
-                </SliderRow>
+                  <SliderRow>
+                    <SliderTitle>
+                      Darken
+                    </SliderTitle>
+                    <SliderInput type='range' min={0} max={1} step='any' value={this.state.darkenValue} onChange={this.handleDarkenChange} />
+                  </SliderRow>
+                </div>
+
+                {colorString.to.hex(Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue).rgb().round().array())}
+
               </div>
-
-              {colorString.to.hex(Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue).rgb().round().array())}
-
-              <div onClick={this.handleSettingsCloseClick}>close</div>
-            </div>
-          </SlidersWrapper>
+            </SlidersWrapper>
+            <SlidersBackdrop onClick={this.handleColorClick} />
+          </SlidersContainer>
         }
       </div>
     )
@@ -338,12 +340,36 @@ class App extends Component {
     super(props)
     this.state = {
       saturationValue: 0,
-      initialColor: '#69B794',
-      colorsAmount: 12,
-      colorSettinsOpen: false
+      initialColor: 'blue',
+      initialColorHue: 153,
+      initialColorLightness: 56,
+      initialColorSaturation: 35,
+      colorsAmount: 21
     }
     this.handleColorChange = this.handleColorChange.bind(this)
     this.handleColorsAmountChange = this.handleColorsAmountChange.bind(this)
+
+    this.handleInitialColorHue = this.handleInitialColorHue.bind(this)
+    this.handleInitialColorLightness = this.handleInitialColorLightness.bind(this)
+    this.handleInitialColorSaturation = this.handleInitialColorSaturation.bind(this)
+  }
+
+  handleInitialColorHue (e) {
+    this.setState({
+      initialColorHue: e.target.value
+    })
+  }
+
+  handleInitialColorLightness (e) {
+    this.setState({
+      initialColorLightness: e.target.value
+    })
+  }
+
+  handleInitialColorSaturation (e) {
+    this.setState({
+      initialColorSaturation: e.target.value
+    })
   }
 
   handleSaturationChange (e) {
@@ -365,24 +391,49 @@ class App extends Component {
   }
 
   render () {
-    const initialColor = this.state.initialColor
+    const getInitialColor = () => {
+      return `hsl(${this.state.initialColorHue}, ${this.state.initialColorSaturation}%, ${this.state.initialColorLightness}%)`
+    }
+
+    console.log(getInitialColor())
+
     const colorsList = []
 
     let step
     for (step = 0; step < this.state.colorsAmount; step++) {
-      colorsList.push(Color(initialColor).rotate(step * 360 / this.state.colorsAmount).string())
+      colorsList.push(Color(getInitialColor()).rotate(step * 360 / this.state.colorsAmount).string())
     }
 
     return (
       <MainContainer>
         <LeftSection>
-          Wheel
+          <div>
+            <SliderRow>
+              <SliderTitle>
+                Hue
+              </SliderTitle>
+              <SliderInput type='range' min={0} max={359} step='any' value={this.state.initialColorHue} onChange={this.handleInitialColorHue} />
+            </SliderRow>
+
+            <SliderRow>
+              <SliderTitle>
+                Saturation
+              </SliderTitle>
+              <SliderInput type='range' min={0} max={100} step='any' value={this.state.initialColorSaturation} onChange={this.handleInitialColorSaturation} />
+            </SliderRow>
+
+            <SliderRow>
+              <SliderTitle>
+                Lightness
+              </SliderTitle>
+              <SliderInput type='range' min={0} max={100} step='any' value={this.state.initialColorLightness} onChange={this.handleInitialColorLightness} />
+            </SliderRow>
+          </div>
         </LeftSection>
 
         <CenterSection>
           <ColorBlocks>
             <ColorsAmountInput min={1} max={28} type='number' value={this.state.colorsAmount} onChange={this.handleColorsAmountChange} />
-            <ColorInput type='color' value={this.state.initialColor} onChange={this.handleColorChange} />
 
             {colorsList.map((colorItem, index) => (
               <ColorBlock color={colorItem} rotateAngle={index * 360 / this.state.colorsAmount} />
