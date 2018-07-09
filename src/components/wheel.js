@@ -223,7 +223,7 @@ class WheelItem extends Component {
 const Wheel = ({ colorsList, colorsAmount }) => (
   <WheelWrapper>
     {colorsList.map((colorsListItem, index) => (
-      <WheelItem rotateAngle={index * 360 / colorsAmount} color={colorsListItem} colorsAmount={colorsAmount} />
+      <WheelItem rotateAngle={index * 360 / colorsAmount} color={colorsListItem} colorsAmount={colorsAmount} key={index} />
     ))}
   </WheelWrapper>
 )

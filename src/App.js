@@ -61,7 +61,7 @@ const ColorsAmountInput = styled.input`
 class App extends Component {
   constructor (props) {
     super(props)
-    this.state = {
+    const defaultState = {
       saturationValue: 0,
       initialColor: 'blue',
       initialColorHue: 153,
@@ -69,12 +69,41 @@ class App extends Component {
       initialColorSaturation: 35,
       colorsAmount: 21
     }
+    const hashState = this.getHashObject()
+
+    this.state = hashState || defaultState
+
     this.handleColorChange = this.handleColorChange.bind(this)
     this.handleColorsAmountChange = this.handleColorsAmountChange.bind(this)
 
     this.handleInitialColorHue = this.handleInitialColorHue.bind(this)
     this.handleInitialColorLightness = this.handleInitialColorLightness.bind(this)
     this.handleInitialColorSaturation = this.handleInitialColorSaturation.bind(this)
+    this.updateHash = this.updateHash.bind(this)
+
+    console.log(this.getHashObject())
+  }
+
+  componentDidUpdate () {
+    this.updateHash()
+  }
+
+  updateHash () {
+    window.location.hash = encodeURI(JSON.stringify(this.state))
+  }
+
+  getHash () {
+    const hash = decodeURI(window.location.hash)
+
+    if (hash) {
+      return hash.substr(1, hash.length)
+    }
+
+    return null
+  }
+
+  getHashObject () {
+    return JSON.parse(this.getHash())
   }
 
   handleInitialColorHue (e) {
@@ -117,8 +146,6 @@ class App extends Component {
     const getInitialColor = () => {
       return `hsl(${this.state.initialColorHue}, ${this.state.initialColorSaturation}%, ${this.state.initialColorLightness}%)`
     }
-
-    console.log(getInitialColor())
 
     const colorsList = []
 
