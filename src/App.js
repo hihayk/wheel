@@ -62,9 +62,8 @@ class App extends Component {
   constructor (props) {
     super(props)
     const defaultState = {
-      saturationValue: 0,
-      initialColor: 'blue',
       initialColorHue: 153,
+      initialColorHueAmount: 360,
       initialColorLightness: 56,
       initialColorSaturation: 35,
       colorsAmount: 21
@@ -77,6 +76,7 @@ class App extends Component {
     this.handleColorsAmountChange = this.handleColorsAmountChange.bind(this)
 
     this.handleInitialColorHue = this.handleInitialColorHue.bind(this)
+    this.handleInitialColorHueAmount = this.handleInitialColorHueAmount.bind(this)
     this.handleInitialColorLightness = this.handleInitialColorLightness.bind(this)
     this.handleInitialColorSaturation = this.handleInitialColorSaturation.bind(this)
     this.updateHash = this.updateHash.bind(this)
@@ -112,6 +112,12 @@ class App extends Component {
     })
   }
 
+  handleInitialColorHueAmount (e) {
+    this.setState({
+      initialColorHueAmount: e.target.value
+    })
+  }
+
   handleInitialColorLightness (e) {
     this.setState({
       initialColorLightness: e.target.value
@@ -121,12 +127,6 @@ class App extends Component {
   handleInitialColorSaturation (e) {
     this.setState({
       initialColorSaturation: e.target.value
-    })
-  }
-
-  handleSaturationChange (e) {
-    this.setState({
-      saturationValue: e.target.value
     })
   }
 
@@ -151,7 +151,7 @@ class App extends Component {
 
     let step
     for (step = 0; step < this.state.colorsAmount; step++) {
-      colorsList.push(Color(getInitialColor()).rotate(step * 360 / this.state.colorsAmount).string())
+      colorsList.push(Color(getInitialColor()).rotate(step * this.state.initialColorHueAmount / this.state.colorsAmount).string())
     }
 
     return (
@@ -162,7 +162,15 @@ class App extends Component {
         <LeftSection>
           <div>
             <SliderBox
-              label='Hue'
+              label='Hue Amount'
+              sliderValue={this.state.initialColorHueAmount}
+              sliderOnChange={this.handleInitialColorHueAmount}
+              min={0}
+              max={359}
+              step={1}
+            />
+            <SliderBox
+              label='Hue Angle'
               sliderValue={this.state.initialColorHue}
               sliderOnChange={this.handleInitialColorHue}
               min={0}
