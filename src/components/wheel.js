@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Color from 'color'
 import styled from 'styled-components'
 import colorString from 'color-string'
-import SliderBox from './slider-box'
 
 const wheelRadius = 320
 const colorCircleSize = 32
@@ -40,20 +39,6 @@ const ColorBoxWrapper = styled.div`
   }
 `
 
-const SlidersBackdrop = styled.div`
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  background-color: rgba(255,255,255,0);
-  left: 0;
-  top: 0;
-  z-index: 80;
-`
-
-const SlidersContainer = styled.div`
-
-`
-
 const WheelWrapper = styled.div`
   z-index: 110;
   position: relative;
@@ -62,18 +47,6 @@ const WheelWrapper = styled.div`
 `
 
 const WheelItemWrapper = styled.div`
-`
-
-const SlidersWrapper = styled.div`
-  margin-left: 48px;
-  height: 100%;
-  left: 100%;
-  display: flex;
-  align-items: center;
-  z-index: 120;
-  background-color: white;
-  position: absolute;
-  top: 0;
 `
 
 const ColorCodesSection = styled.div`
@@ -93,12 +66,14 @@ class WheelItem extends Component {
       desaturationValue: 0,
       lightenValue: 0,
       darkenValue: 0,
+      rotateValue: 0,
       colorSettinsOpen: false
     }
     this.handleSaturationChange = this.handleSaturationChange.bind(this)
     this.handleDesaturationChange = this.handleDesaturationChange.bind(this)
     this.handleLightenChange = this.handleLightenChange.bind(this)
     this.handleDarkenChange = this.handleDarkenChange.bind(this)
+    this.handleRotateChange = this.handleRotateChange.bind(this)
 
     this.handleColorClick = this.handleColorClick.bind(this)
     this.handleSettingsCloseClick = this.handleSettingsCloseClick.bind(this)
@@ -132,6 +107,12 @@ class WheelItem extends Component {
     })
   }
 
+  handleRotateChange (e) {
+    this.setState({
+      rotateValue: e.target.value
+    })
+  }
+
   handleColorClick (e) {
     if (!this.state.colorSettinsOpen) {
       this.setState({
@@ -151,7 +132,7 @@ class WheelItem extends Component {
   }
 
   render () {
-    const settingsHasChanged = this.state.saturationValue > 0 || this.state.desaturationValue > 0 || this.state.lightenValue > 0 || this.state.darkenValue > 0
+    const settingsHasChanged = this.state.saturationValue > 0 || this.state.desaturationValue > 0 || this.state.lightenValue > 0 || this.state.darkenValue > 0 || this.state.rotateValue > 0
 
     return (
       <WheelItemWrapper>
@@ -166,51 +147,10 @@ class WheelItem extends Component {
           <ColorBox
             colorSettinsOpen={this.state.colorSettinsOpen}
             style={{
-              backgroundColor: Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue)
+              backgroundColor: Color(this.props.color).rotate(this.state.rotateValue).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue)
             }}
           />
         </ColorBoxWrapper>
-
-        {this.state.colorSettinsOpen && (
-          <SlidersContainer>
-            <SlidersWrapper>
-              <div>
-                <SliderBox
-                  label='Saturate'
-                  sliderValue={this.state.saturationValue}
-                  sliderOnChange={this.handleSaturationChange}
-                  min={0}
-                  max={1}
-                />
-
-                <SliderBox
-                  label='Desaturate'
-                  sliderValue={this.state.desaturationValue}
-                  sliderOnChange={this.handleDesaturationChange}
-                  min={0}
-                  max={1}
-                />
-
-                <SliderBox
-                  label='Lighten'
-                  sliderValue={this.state.lightenValue}
-                  sliderOnChange={this.handleLightenChange}
-                  min={0}
-                  max={1}
-                />
-
-                <SliderBox
-                  label='Darken'
-                  sliderValue={this.state.darkenValue}
-                  sliderOnChange={this.handleDarkenChange}
-                  min={0}
-                  max={1}
-                />
-              </div>
-            </SlidersWrapper>
-            <SlidersBackdrop onClick={this.handleColorClick} />
-          </SlidersContainer>
-        )}
 
         <ColorCodesSection style={{ top: `-100px` }}>
           {colorString.to.hex(Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue).rgb().round().array())}

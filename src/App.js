@@ -4,6 +4,7 @@ import Color from 'color'
 import styled from 'styled-components'
 import Wheel from './components/wheel'
 import SliderBox from './components/slider-box'
+import SliderPanel from './components/slider-panel'
 
 const wheelRadius = 320
 
@@ -58,6 +59,19 @@ const ColorsAmountInput = styled.input`
   }
 `
 
+const baseColorsState = {
+  saturationValue: 0,
+  desaturationValue: 0,
+  lightenValue: 0,
+  darkenValue: 0
+}
+
+const getColorsArray = (length) => {
+  const array = new Array(length)
+
+  return array.fill({ ...baseColorsState })
+}
+
 class App extends Component {
   constructor (props) {
     super(props)
@@ -67,7 +81,8 @@ class App extends Component {
       initialColorHue: 153,
       initialColorLightness: 56,
       initialColorSaturation: 35,
-      colorsAmount: 21
+      colorsAmount: 21,
+      colors: getColorsArray(21)
     }
     const hashState = this.getHashObject()
 
@@ -138,7 +153,8 @@ class App extends Component {
 
   handleColorsAmountChange (e) {
     this.setState({
-      colorsAmount: e.target.value
+      colorsAmount: e.target.value,
+      colors: getColorsArray(+e.target.value)
     })
   }
 
@@ -194,6 +210,17 @@ class App extends Component {
             <Wheel colorsList={colorsList} colorsAmount={this.state.colorsAmount} />
           </WheelHelper>
         </CenterSection>
+
+        <SliderPanel
+          saturationValue
+          handleSaturationChange
+          desaturationValue
+          handleDesaturationChange
+          lightenValue
+          handleLightenChange
+          darkenValue
+          handleDarkenChange
+        />
 
       </MainContainer>
     )
