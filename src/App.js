@@ -59,8 +59,12 @@ const ColorsAmountInput = styled.input`
   }
 `
 
+const ColorRectangle = styled.div`
+  ${props => props.selected && `border-left: 8px solid black;`}
+`
+
 const baseColorsState = {
-  saturationValue: 0,
+  saturationValue: 0.2,
   desaturationValue: 0,
   lightenValue: 0,
   darkenValue: 0
@@ -76,13 +80,13 @@ class App extends Component {
   constructor (props) {
     super(props)
     const defaultState = {
-      saturationValue: 0,
       initialColor: 'blue',
       initialColorHue: 153,
       initialColorLightness: 56,
       initialColorSaturation: 35,
-      colorsAmount: 21,
-      colors: getColorsArray(21)
+      colorsAmount: 2,
+      colors: getColorsArray(2),
+      selectedColorIndex: 0
     }
     const hashState = this.getHashObject()
 
@@ -95,8 +99,9 @@ class App extends Component {
     this.handleInitialColorLightness = this.handleInitialColorLightness.bind(this)
     this.handleInitialColorSaturation = this.handleInitialColorSaturation.bind(this)
     this.updateHash = this.updateHash.bind(this)
+    this.handleColorClick = this.handleColorClick.bind(this)
 
-    console.log(this.getHashObject())
+    this.handleSaturationChange = this.handleSaturationChange.bind(this)
   }
 
   componentDidUpdate () {
@@ -140,9 +145,11 @@ class App extends Component {
   }
 
   handleSaturationChange (e) {
-    this.setState({
-      saturationValue: e.target.value
-    })
+    var stateCopy = Object.assign({}, this.state)
+    stateCopy.colors = stateCopy.colors.slice()
+    stateCopy.colors[this.state.selectedColorIndex] = Object.assign({}, stateCopy.colors[this.state.selectedColorIndex])
+    stateCopy.colors[this.state.selectedColorIndex].saturationValue = e.target.value
+    this.setState(stateCopy)
   }
 
   handleColorChange (e) {
@@ -155,6 +162,12 @@ class App extends Component {
     this.setState({
       colorsAmount: e.target.value,
       colors: getColorsArray(+e.target.value)
+    })
+  }
+
+  handleColorClick (index) {
+    this.setState({
+      selectedColorIndex: index
     })
   }
 
@@ -207,19 +220,31 @@ class App extends Component {
         <CenterSection>
           <WheelHelper>
             <ColorsAmountInput min={1} max={28} type='number' value={this.state.colorsAmount} onChange={this.handleColorsAmountChange} />
-            <Wheel colorsList={colorsList} colorsAmount={this.state.colorsAmount} />
+
+            {colorsList.map((color, index) => (
+              <ColorRectangle
+                style={{
+                  background: this.state.selectedColorIndex === index
+                    ? Color(color).saturate(this.state.colors[this.state.selectedColorIndex].saturationValue)
+                    : color
+                }}
+                onClick={() => this.handleColorClick(index)}
+                selected={index === this.state.selectedColorIndex}
+              >
+                .
+                {console.log(this.state.colors[this.state.selectedColorIndex].saturationValue)}
+              </ColorRectangle>
+            ))}
           </WheelHelper>
         </CenterSection>
 
-        <SliderPanel
-          saturationValue
-          handleSaturationChange
-          desaturationValue
-          handleDesaturationChange
-          lightenValue
-          handleLightenChange
-          darkenValue
-          handleDarkenChange
+        <input
+          min={0}
+          max={1}
+          type='range'
+          step={0.1}
+          value={this.state.colors[this.state.selectedColorIndex].saturationValue}
+          onChange={this.handleSaturationChange}
         />
 
       </MainContainer>
