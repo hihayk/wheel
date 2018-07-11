@@ -13,6 +13,7 @@ const ColorBox = styled.div`
   border-radius: 50%;
   transition: transform .2s;
   ${props => props.colorSettinsOpen && `transform: scale(1.8)`};
+  ${props => props.colorIsHighlighted && `box-shadow: 0 0 0 2px white, 0 0 0 4px rgba(0,0,0,.5);`};
   cursor: pointer;
 `
 
@@ -116,7 +117,9 @@ class WheelItem extends Component {
       secDarkenValue: 0,
 
       showSecColor: false,
-      settingsLinked: true
+      settingsLinked: true,
+
+      colorIsHighlighted: false
     }
     this.handleSaturationChange = this.handleSaturationChange.bind(this)
     this.handleDesaturationChange = this.handleDesaturationChange.bind(this)
@@ -135,6 +138,7 @@ class WheelItem extends Component {
 
     this.handleDuplicate = this.handleDuplicate.bind(this)
     this.handleRemoveDuplicate = this.handleRemoveDuplicate.bind(this)
+    this.handleColorCodeHover = this.handleColorCodeHover.bind(this)
   }
 
   handleSaturationChange (e) {
@@ -262,6 +266,18 @@ class WheelItem extends Component {
     })
   }
 
+  handleColorCodeHover () {
+    if (this.state.colorIsHighlighted) {
+      this.setState({
+        colorIsHighlighted: false
+      })
+    } else {
+      this.setState({
+        colorIsHighlighted: true
+      })
+    }
+  }
+
   render () {
     const settingsHasChanged = this.state.saturationValue > 0 || this.state.desaturationValue > 0 || this.state.lightenValue > 0 || this.state.darkenValue > 0
 
@@ -277,6 +293,7 @@ class WheelItem extends Component {
           <ColorBox
             onClick={this.handleColorClick}
             colorSettinsOpen={this.state.colorSettinsOpen}
+            colorIsHighlighted={this.state.colorIsHighlighted}
             style={{
               backgroundColor: Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue)
             }}
@@ -383,7 +400,7 @@ class WheelItem extends Component {
         )}
 
         <ColorCodesSection style={{ top: `-100px` }}>
-          {colorString.to.hex(Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue).rgb().round().array())}
+          <div onMouseOver={this.handleColorCodeHover} onMouseOut={this.handleColorCodeHover}>{colorString.to.hex(Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue).rgb().round().array())}</div>
 
           {this.state.showSecColor && (<span>&nbsp;+&nbsp;</span>)}
 
