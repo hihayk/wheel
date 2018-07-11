@@ -32,9 +32,11 @@ const SliderText = styled.div`
 `
 
 const Label = styled.div`
+  user-select: none;
 `
 const Value = styled.div`
   opacity: .6;
+  user-select: none;
 `
 
 const SliderRow = styled.div`

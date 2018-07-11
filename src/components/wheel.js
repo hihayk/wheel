@@ -16,6 +16,17 @@ const ColorBox = styled.div`
   cursor: pointer;
 `
 
+const SecColorBox = styled.div`
+  width: ${colorCircleSize}px;
+  height: ${colorCircleSize}px;
+  border-radius: 50%;
+  transition: transform .2s;
+  ${props => props.secColorSettinsOpen && `transform: scale(1.8)`};
+  cursor: pointer;
+  position: relative;
+  top: 20px;
+`
+
 const ColorBoxWrapper = styled.div`
   height: ${wheelRadius / 2}px;
   width: ${colorCircleSize}px;
@@ -30,11 +41,12 @@ const ColorBoxWrapper = styled.div`
     height: 6px;
     display: block;
     border-radius: 50%;
-    top: 48px;
+    top: 39px;
     left: 0;
     right: 0;
     margin: auto;
     position: absolute;
+    z-index: -1;
 
     ${props => props.hasChanged && `background-color: #555`};
   }
@@ -44,7 +56,7 @@ const SlidersBackdrop = styled.div`
   width: 100vw;
   height: 100vh;
   position: fixed;
-  background-color: rgba(255,255,255,0);
+  background-color: rgba(255,0,0,0);
   left: 0;
   top: 0;
   z-index: 80;
@@ -83,6 +95,7 @@ const ColorCodesSection = styled.div`
   font-size: 16px;
   line-height: 24px;
   position: relative;
+  display: flex;
 `
 
 class WheelItem extends Component {
@@ -93,7 +106,17 @@ class WheelItem extends Component {
       desaturationValue: 0,
       lightenValue: 0,
       darkenValue: 0,
-      colorSettinsOpen: false
+
+      colorSettinsOpen: false,
+      secColorSettinsOpen: false,
+
+      secSaturationValue: 0,
+      secDesaturationValue: 0,
+      secLightenValue: 0,
+      secDarkenValue: 0,
+
+      showSecColor: false,
+      settingsLinked: true
     }
     this.handleSaturationChange = this.handleSaturationChange.bind(this)
     this.handleDesaturationChange = this.handleDesaturationChange.bind(this)
@@ -102,33 +125,87 @@ class WheelItem extends Component {
 
     this.handleColorClick = this.handleColorClick.bind(this)
     this.handleSettingsCloseClick = this.handleSettingsCloseClick.bind(this)
+    this.handleBackdropClick = this.handleBackdropClick.bind(this)
+    this.handleSecColorClick = this.handleSecColorClick.bind(this)
+
+    this.handleSecSaturationChange = this.handleSecSaturationChange.bind(this)
+    this.handleSecDesaturationChange = this.handleSecDesaturationChange.bind(this)
+    this.handleSecLightenChange = this.handleSecLightenChange.bind(this)
+    this.handleSecDarkenChange = this.handleSecDarkenChange.bind(this)
+
+    this.handleDuplicate = this.handleDuplicate.bind(this)
+    this.handleRemoveDuplicate = this.handleRemoveDuplicate.bind(this)
   }
 
   handleSaturationChange (e) {
     this.setState({
       saturationValue: e.target.value,
-      desaturationValue: 0
+      desaturationValue: 0,
+
+      secSaturationValue: e.target.value,
+      secDesaturationValue: 0
     })
   }
 
   handleDesaturationChange (e) {
     this.setState({
       desaturationValue: e.target.value,
-      saturationValue: 0
+      saturationValue: 0,
+
+      secDesaturationValue: e.target.value,
+      secSaturationValue: 0
     })
   }
 
   handleLightenChange (e) {
     this.setState({
       lightenValue: e.target.value,
-      darkenValue: 0
+      darkenValue: 0,
+
+      secLightenValue: e.target.value,
+      secDarkenValue: 0
     })
   }
 
   handleDarkenChange (e) {
     this.setState({
       darkenValue: e.target.value,
-      lightenValue: 0
+      lightenValue: 0,
+
+      secDarkenValue: e.target.value,
+      secLightenValue: 0
+    })
+  }
+
+  handleSecSaturationChange (e) {
+    this.setState({
+      settingsLinked: false,
+      secSaturationValue: e.target.value,
+      secDesaturationValue: 0
+    })
+  }
+
+  handleSecDesaturationChange (e) {
+    this.setState({
+      settingsLinked: false,
+      secDesaturationValue: e.target.value,
+      secSaturationValue: 0
+    })
+  }
+
+  handleSecLightenChange (e) {
+    this.setState({
+      settingsLinked: false,
+      secLightenValue: e.target.value,
+      secDarkenValue: 0
+    })
+  }
+
+  handleSecDarkenChange (e) {
+    this.setState({
+      settingsLinked: false,
+      secDarkenValue: e.target.value,
+      secLightenValue: 0
     })
   }
 
@@ -144,9 +221,44 @@ class WheelItem extends Component {
     }
   }
 
+  handleSecColorClick (e) {
+    if (!this.state.secColorSettinsOpen) {
+      this.setState({
+        secColorSettinsOpen: true
+      })
+    } else {
+      this.setState({
+        secColorSettinsOpen: false
+      })
+    }
+  }
+
   handleSettingsCloseClick (e) {
     this.setState({
-      colorSettinsOpen: false
+      colorSettinsOpen: false,
+      secColorSettinsOpen: false
+    })
+  }
+
+  handleBackdropClick (e) {
+    this.setState({
+      colorSettinsOpen: false,
+      secColorSettinsOpen: false
+    })
+  }
+
+  handleDuplicate () {
+    this.setState({
+      showSecColor: true,
+      colorSettinsOpen: false,
+      secColorSettinsOpen: true
+    })
+  }
+
+  handleRemoveDuplicate () {
+    this.setState({
+      showSecColor: false,
+      secColorSettinsOpen: false
     })
   }
 
@@ -157,19 +269,30 @@ class WheelItem extends Component {
       <WheelItemWrapper>
         <ColorBoxWrapper
           rotateAngle={this.props.rotateAngle}
-          onClick={this.handleColorClick}
           hasChanged={settingsHasChanged}
           style={{
             transform: `rotate(${this.props.rotateAngle}deg)`
           }}
         >
           <ColorBox
+            onClick={this.handleColorClick}
             colorSettinsOpen={this.state.colorSettinsOpen}
             style={{
               backgroundColor: Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue)
             }}
           />
+          {this.state.showSecColor && (
+            <SecColorBox
+              secColorSettinsOpen={this.state.secColorSettinsOpen}
+              onClick={this.handleSecColorClick}
+              style={{ width: 32, backgroundColor: Color(this.props.color).saturate(this.state.settingsLinked ? this.state.saturationValue : this.state.secSaturationValue).desaturate(this.state.settingsLinked ? this.state.desaturationValue : this.state.secDesaturationValue).lighten(this.state.settingsLinked ? this.state.lightenValue : this.state.secLightenValue).darken(this.state.settingsLinked ? this.state.darkenValue : this.state.secDarkenValue) }}
+            />
+          )}
         </ColorBoxWrapper>
+
+        {(this.state.secColorSettinsOpen || this.state.colorSettinsOpen) && (
+          <SlidersBackdrop onClick={this.handleBackdropClick} />
+        )}
 
         {this.state.colorSettinsOpen && (
           <SlidersContainer>
@@ -206,14 +329,65 @@ class WheelItem extends Component {
                   min={0}
                   max={1}
                 />
+
+                <div onClick={this.handleDuplicate}>
+                  Duplicate
+                </div>
               </div>
             </SlidersWrapper>
-            <SlidersBackdrop onClick={this.handleColorClick} />
+          </SlidersContainer>
+        )}
+
+        {this.state.secColorSettinsOpen && (
+          <SlidersContainer>
+            <SlidersWrapper>
+              <div>
+                <SliderBox
+                  label='Saturate'
+                  sliderValue={this.state.secSaturationValue}
+                  sliderOnChange={this.handleSecSaturationChange}
+                  min={0}
+                  max={1}
+                />
+
+                <SliderBox
+                  label='Desaturate'
+                  sliderValue={this.state.secDesaturationValue}
+                  sliderOnChange={this.handleSecDesaturationChange}
+                  min={0}
+                  max={1}
+                />
+
+                <SliderBox
+                  label='Lighten'
+                  sliderValue={this.state.secLightenValue}
+                  sliderOnChange={this.handleSecLightenChange}
+                  min={0}
+                  max={1}
+                />
+
+                <SliderBox
+                  label='Darken'
+                  sliderValue={this.state.secDarkenValue}
+                  sliderOnChange={this.handleSecDarkenChange}
+                  min={0}
+                  max={1}
+                />
+
+                <div onClick={this.handleRemoveDuplicate}>
+                  Remove
+                </div>
+              </div>
+            </SlidersWrapper>
           </SlidersContainer>
         )}
 
         <ColorCodesSection style={{ top: `-100px` }}>
           {colorString.to.hex(Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue).rgb().round().array())}
+
+          {this.state.showSecColor && (<span>&nbsp;+&nbsp;</span>)}
+
+          {this.state.showSecColor && colorString.to.hex(Color(this.props.color).saturate(this.state.secSaturationValue).desaturate(this.state.secDesaturationValue).lighten(this.state.secLightenValue).darken(this.state.secDarkenValue).rgb().round().array())}
         </ColorCodesSection>
       </WheelItemWrapper>
     )

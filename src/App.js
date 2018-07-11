@@ -85,7 +85,7 @@ class App extends Component {
   }
 
   componentDidUpdate () {
-    this.updateHash()
+    // this.updateHash()
   }
 
   updateHash () {
