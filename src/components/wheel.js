@@ -13,7 +13,7 @@ const ColorBox = styled.div`
   border-radius: 50%;
   transition: transform .2s;
   ${props => props.colorSettinsOpen && `transform: scale(1.8)`};
-  ${props => props.colorIsHighlighted && `box-shadow: 0 0 0 2px white, 0 0 0 4px rgba(0,0,0,.5);`};
+  ${props => props.colorIsHighlighted && `box-shadow: 0 0 0 4px white, 0 0 0 6px rgba(0,0,0,.5);`};
   cursor: pointer;
 `
 
@@ -142,43 +142,79 @@ class WheelItem extends Component {
   }
 
   handleSaturationChange (e) {
-    this.setState({
-      saturationValue: e.target.value,
-      desaturationValue: 0,
+    if (this.state.showSecColor) {
+      this.setState({
+        saturationValue: e.target.value,
+        desaturationValue: 0,
 
-      secSaturationValue: e.target.value,
-      secDesaturationValue: 0
-    })
+        settingsLinked: false
+      })
+    } else {
+      this.setState({
+        saturationValue: e.target.value,
+        desaturationValue: 0,
+
+        secSaturationValue: e.target.value,
+        secDesaturationValue: 0
+      })
+    }
   }
 
   handleDesaturationChange (e) {
-    this.setState({
-      desaturationValue: e.target.value,
-      saturationValue: 0,
+    if (this.state.showSecColor) {
+      this.setState({
+        desaturationValue: e.target.value,
+        saturationValue: 0,
 
-      secDesaturationValue: e.target.value,
-      secSaturationValue: 0
-    })
+        settingsLinked: false
+      })
+    } else {
+      this.setState({
+        desaturationValue: e.target.value,
+        saturationValue: 0,
+
+        secDesaturationValue: e.target.value,
+        secSaturationValue: 0
+      })
+    }
   }
 
   handleLightenChange (e) {
-    this.setState({
-      lightenValue: e.target.value,
-      darkenValue: 0,
+    if (this.state.showSecColor) {
+      this.setState({
+        lightenValue: e.target.value,
+        darkenValue: 0,
 
-      secLightenValue: e.target.value,
-      secDarkenValue: 0
-    })
+        settingsLinked: false
+      })
+    } else {
+      this.setState({
+        lightenValue: e.target.value,
+        darkenValue: 0,
+
+        secLightenValue: e.target.value,
+        secDarkenValue: 0
+      })
+    }
   }
 
   handleDarkenChange (e) {
-    this.setState({
-      darkenValue: e.target.value,
-      lightenValue: 0,
+    if (this.state.showSecColor) {
+      this.setState({
+        darkenValue: e.target.value,
+        lightenValue: 0,
 
-      secDarkenValue: e.target.value,
-      secLightenValue: 0
-    })
+        settingsLinked: false
+      })
+    } else {
+      this.setState({
+        darkenValue: e.target.value,
+        lightenValue: 0,
+
+        secDarkenValue: e.target.value,
+        secLightenValue: 0
+      })
+    }
   }
 
   handleSecSaturationChange (e) {
