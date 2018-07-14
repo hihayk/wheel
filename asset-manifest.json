@@ -1,6 +1,10 @@
 {
   "main.css": "static/css/main.fe079bcd.css",
   "main.css.map": "static/css/main.fe079bcd.css.map",
-  "main.js": "static/js/main.f80ad883.js",
-  "main.js.map": "static/js/main.f80ad883.js.map"
+  "main.js": "static/js/main.63c8e932.js",
+  "main.js.map": "static/js/main.63c8e932.js.map",
+  "static/media/cross.svg": "static/media/cross.a7587606.svg",
+  "static/media/duplicate.svg": "static/media/duplicate.9a68f511.svg",
+  "static/media/eye.svg": "static/media/eye.ecc0f8b1.svg",
+  "static/media/trash.svg": "static/media/trash.2a535082.svg"
 }
