@@ -3,6 +3,7 @@ import Color from 'color'
 import styled from 'styled-components'
 import colorString from 'color-string'
 import SliderBox from './slider-box'
+import IconButton from './icon-button'
 
 const wheelRadius = 320
 const colorCircleSize = 32
@@ -12,8 +13,9 @@ const ColorBox = styled.div`
   height: ${colorCircleSize}px;
   border-radius: 50%;
   transition: transform .2s;
-  ${props => props.colorSettinsOpen && `transform: scale(1.8)`};
+  ${props => props.colorSettinsOpen && !props.isHidden && `transform: scale(1.8)`};
   ${props => props.colorIsHighlighted && `box-shadow: 0 0 0 4px white, 0 0 0 6px rgba(0,0,0,.5);`};
+  ${props => props.isHidden && `border: 1px solid rgba(0,0,0,.2);`};
   cursor: pointer;
 `
 
@@ -99,6 +101,14 @@ const ColorCodesSection = styled.div`
   display: flex;
 `
 
+const ButtonsSection = styled.div`
+  display: flex;
+
+  & > *:not(:last-child) {
+    margin-right: 8px;
+  }
+`
+
 class WheelItem extends Component {
   constructor (props) {
     super(props)
@@ -119,7 +129,8 @@ class WheelItem extends Component {
       showSecColor: false,
       settingsLinked: true,
 
-      colorIsHighlighted: false
+      colorIsHighlighted: false,
+      isHidden: false
     }
     this.handleSaturationChange = this.handleSaturationChange.bind(this)
     this.handleDesaturationChange = this.handleDesaturationChange.bind(this)
@@ -139,6 +150,7 @@ class WheelItem extends Component {
     this.handleDuplicate = this.handleDuplicate.bind(this)
     this.handleRemoveDuplicate = this.handleRemoveDuplicate.bind(this)
     this.handleColorCodeHover = this.handleColorCodeHover.bind(this)
+    this.handleHide = this.handleHide.bind(this)
   }
 
   handleSaturationChange (e) {
@@ -314,6 +326,18 @@ class WheelItem extends Component {
     }
   }
 
+  handleHide () {
+    if (this.state.isHidden) {
+      this.setState({
+        isHidden: false
+      })
+    } else {
+      this.setState({
+        isHidden: true
+      })
+    }
+  }
+
   render () {
     const settingsHasChanged = this.state.saturationValue > 0 || this.state.desaturationValue > 0 || this.state.lightenValue > 0 || this.state.darkenValue > 0
 
@@ -330,8 +354,9 @@ class WheelItem extends Component {
             onClick={this.handleColorClick}
             colorSettinsOpen={this.state.colorSettinsOpen}
             colorIsHighlighted={this.state.colorIsHighlighted}
+            isHidden={this.state.isHidden}
             style={{
-              backgroundColor: Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue)
+              backgroundColor: !this.state.isHidden && Color(this.props.color).saturate(this.state.saturationValue).desaturate(this.state.desaturationValue).lighten(this.state.lightenValue).darken(this.state.darkenValue)
             }}
           />
           {this.state.showSecColor && (
@@ -383,9 +408,10 @@ class WheelItem extends Component {
                   max={1}
                 />
 
-                <div onClick={this.handleDuplicate}>
-                  Duplicate
-                </div>
+                <ButtonsSection>
+                  <IconButton icon='eye' onClick={this.handleHide} isDisabled={this.state.isHidden} title='Hide/Show' />
+                  <IconButton icon='duplicate' onClick={this.handleDuplicate} title='Duplicate' />
+                </ButtonsSection>
               </div>
             </SlidersWrapper>
           </SlidersContainer>
@@ -427,9 +453,9 @@ class WheelItem extends Component {
                   max={1}
                 />
 
-                <div onClick={this.handleRemoveDuplicate}>
-                  Remove
-                </div>
+                <ButtonsSection>
+                  <IconButton icon='trash' onClick={this.handleRemoveDuplicate} title='Remove duplicate' />
+                </ButtonsSection>
               </div>
             </SlidersWrapper>
           </SlidersContainer>
