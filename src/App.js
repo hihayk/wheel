@@ -58,6 +58,24 @@ const ColorsAmountInput = styled.input`
   }
 `
 
+const Footer = styled.div`
+  padding: 64px 72px;
+  font-size: 14px;
+  line-height: 20px;
+
+  a {
+    color: inherit;
+
+    &:visited {
+      color: inherit;
+    }
+  }
+`
+
+const Root = styled.div`
+
+`
+
 class App extends Component {
   constructor (props) {
     super(props)
@@ -155,55 +173,61 @@ class App extends Component {
     }
 
     return (
-      <MainContainer>
-        <Logo>
-          Wheel
-        </Logo>
-        <LeftSection>
-          <div>
-            <SliderBox
-              label='Hue Amount'
-              sliderValue={this.state.initialColorHueAmount}
-              sliderOnChange={this.handleInitialColorHueAmount}
-              min={0}
-              max={359}
-              step={1}
-            />
-            <SliderBox
-              label='Hue Angle'
-              sliderValue={this.state.initialColorHue}
-              sliderOnChange={this.handleInitialColorHue}
-              min={0}
-              max={359}
-              step={0.1}
-            />
-            <SliderBox
-              label='Saturation'
-              sliderValue={this.state.initialColorSaturation}
-              sliderOnChange={this.handleInitialColorSaturation}
-              min={0}
-              max={100}
-              step={0.1}
-            />
-            <SliderBox
-              label='Lightness'
-              sliderValue={this.state.initialColorLightness}
-              sliderOnChange={this.handleInitialColorLightness}
-              min={0}
-              max={100}
-              step={0.1}
-            />
-          </div>
-        </LeftSection>
+      <Root>
+        <MainContainer>
+          <Logo>
+            Wheel
+          </Logo>
+          <LeftSection>
+            <div>
+              <SliderBox
+                label='Hue Amount'
+                sliderValue={this.state.initialColorHueAmount}
+                sliderOnChange={this.handleInitialColorHueAmount}
+                min={0}
+                max={359}
+                step={1}
+              />
+              <SliderBox
+                label='Hue Angle'
+                sliderValue={this.state.initialColorHue}
+                sliderOnChange={this.handleInitialColorHue}
+                min={0}
+                max={359}
+                step={0.1}
+              />
+              <SliderBox
+                label='Saturation'
+                sliderValue={this.state.initialColorSaturation}
+                sliderOnChange={this.handleInitialColorSaturation}
+                min={0}
+                max={100}
+                step={0.1}
+              />
+              <SliderBox
+                label='Lightness'
+                sliderValue={this.state.initialColorLightness}
+                sliderOnChange={this.handleInitialColorLightness}
+                min={0}
+                max={100}
+                step={0.1}
+              />
+            </div>
+          </LeftSection>
 
-        <CenterSection>
-          <WheelHelper>
-            <ColorsAmountInput min={1} max={28} type='number' value={this.state.colorsAmount} onChange={this.handleColorsAmountChange} />
-            <Wheel colorsList={colorsList} colorsAmount={this.state.colorsAmount} />
-          </WheelHelper>
-        </CenterSection>
+          <CenterSection>
+            <WheelHelper>
+              <ColorsAmountInput min={1} max={28} type='number' value={this.state.colorsAmount} onChange={this.handleColorsAmountChange} />
+              <Wheel colorsList={colorsList} colorsAmount={this.state.colorsAmount} />
+            </WheelHelper>
+          </CenterSection>
 
-      </MainContainer>
+        </MainContainer>
+        <Footer>
+          made by <a href='http://hihayk.com' target='_blank'>Hayk</a> with the
+          help of <a href='http://claudiacaran.com' target='_blank'>Claudia</a> and <a href='https://jeremenichelli.io' target='_blank'>Jeremias</a>
+        </Footer>
+      </Root>
     )
   }
 }
