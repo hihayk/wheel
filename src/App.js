@@ -65,10 +65,17 @@ const Footer = styled.div`
 
   a {
     color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,.2);
+    padding-bottom: 2px;
 
     &:visited {
       color: inherit;
     }
+  }
+
+  span {
+    opacity: .4;
   }
 `
 
@@ -226,6 +233,8 @@ class App extends Component {
         <Footer>
           made by <a href='http://hihayk.com' target='_blank'>Hayk</a> with the
           help of <a href='http://claudiacaran.com' target='_blank'>Claudia</a> and <a href='https://jeremenichelli.io' target='_blank'>Jeremias</a>
+          &nbsp;&nbsp;&nbsp;<span>|</span>&nbsp;&nbsp;&nbsp;
+          <a href='https://github.com/hihayk/wheel' target='_blank'>Github</a>
         </Footer>
       </Root>
     )
