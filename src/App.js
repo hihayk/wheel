@@ -59,7 +59,9 @@ const ColorsAmountInput = styled.input`
 `
 
 const Footer = styled.div`
-  padding: 64px 72px;
+  position: absolute;
+  bottom: 40px;
+  left: 88px;
   font-size: 14px;
   line-height: 20px;
 
